@@ -9,10 +9,7 @@ from django.utils.translation import gettext_lazy as _
 # Create your models here.
 
 class UserManager(BaseUserManager):
-    """
-    Custom user model manager where email is the unique identifiers
-    for authentication instead of usernames.
-    """
+
     def create_user(self, first_name, last_name, user_name, birth_date, email, password=None):
         """
         Create and save a user with the given email and password.
@@ -85,7 +82,7 @@ class Achievements(models.Model):
     date=models.DateField(verbose_name="fecha")
     idarea= models.IntegerField(default=0, verbose_name="id area")
     description= models.CharField(max_length=500, verbose_name="descripcion")
-    image= models.ImageField(upload_to='logros/files/image_achievement' ,null=True, blank=True, verbose_name='imagen')
+    image= models.ImageField(upload_to='image_achievements/' ,null=True, blank=True, verbose_name='imagen')
     iduser= models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='id user')
 
 
@@ -94,7 +91,7 @@ class Achievements(models.Model):
 
 
 class Profile(models.Model):
-    profile_picture=models.ImageField(verbose_name="imagen perfil")
+    profile_picture=models.ImageField(upload_to='image_profile/', default="", verbose_name="imagen perfil")
     bio=models.CharField(max_length=300, verbose_name="biografia")  
     iduser= models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='id user')  
 

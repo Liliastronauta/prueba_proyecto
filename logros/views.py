@@ -4,8 +4,8 @@ from rest_framework import status, generics, viewsets, serializers
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.permissions import AllowAny
-from logros.models import User, Achievements
-from logros.serializers import  AchievementsSerializer, RegisterSerializer
+from logros.models import User, Achievements, Profile
+from logros.serializers import  AchievementsSerializer, RegisterSerializer, AchievementImageSerializer, ProfileImageSerializer, ProfileSerializer
 import random
 from django.http import Http404
 from django.contrib.sites.shortcuts import get_current_site
@@ -19,6 +19,8 @@ from django.conf import settings
 
 
 #Registro de Usuario
+
+#Formulario de registro
 class RegisterView(generics.GenericAPIView):
 
     serializer_class= RegisterSerializer
@@ -44,7 +46,8 @@ class RegisterView(generics.GenericAPIView):
 
 
         return Response(user_data, status=status.HTTP_201_CREATED )
-    
+
+ #Enviar correo de verificacion   
 class VerifyEmail(generics.GenericAPIView):
     def get(self, request):
         token=request.GET.get('token')
@@ -61,15 +64,9 @@ class VerifyEmail(generics.GenericAPIView):
             return Response({'error':' Invalid Token '}, status=status.HTTP_400_BAD_REQUEST )
 
 
-"""class RetriveUsers(APIView):
-    permission_classes = (AllowAny, )
+# Logros y sus funciones
 
-    def get(self, request):
-        users_list = Users.objects.all()
-        serializer = UsersSerializer(users_list, many=True)
-        return Response(serializer.data)"""
-
-
+#Crear Logro
 class RetriveAchievements(APIView):
     permission_classes = (AllowAny, )
 
@@ -85,15 +82,6 @@ class RetriveAchievements(APIView):
         achievement_obj.save()
         return Response({'message':'Eliminado'}, status=status.HTTP_204_NO_CONTENT)
 
-
-"""class CreateUser(APIView): #Funcionando
-    permission_classes = (AllowAny, )
-
-    def post(self, request):
-        serializer = UsersSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-        serializer.save()
-        return Response({'message': 'Creado'}, status=status.HTTP_201_CREATED)"""
 
 class CreateAchieve(APIView): #Funcionando
     permission_classes = (AllowAny, )
@@ -147,13 +135,84 @@ class EditAchievement(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
     
 
-#Imagen
-def achievementsimage(request, achievementsimage_id):
-    achievementsimage= Achievements.objects.get(pk=achievementsimage_id)
-    if achievementsimage is not None:
-        return render(request, 'achievementsimage/achievementsimage.html', {'achievementsimage':achievementsimage})
-    else:
-        raise Http404('logro does not exist')
+#Imagen del logro 
+class AchievementImageJson(APIView):
+    def get(self, request, *args):
+        print(str(self.parser_classes))
+        return Response({'pasrsers':' '.join(map(str, self.parser_classes))}, status=204)
+    
+    def post(self, request):
+        serializer= AchievementImageSerializer(data=request.data)
+        if serializer.is_valid():
+            validated_data=serializer.validated_data
+
+            achievements=Achievements(**validated_data)
+            achievements.save()
+
+            serializer_response= AchievementImageSerializer(achievements)
+
+            return Response(serializer_response.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+
+#Perfil 
+class CreatePerfil(APIView): #Funcionando
+    permission_classes = (AllowAny, )
+
+    def get(self, request):
+        profile_list = Profile.objects.all()
+        serializer = ProfileSerializer(profile_list, many=True)
+        return Response(serializer.data)
+
+    
+
+    def post(self, request):
+        serializer = ProfileSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response({'message':'Creado'} , status=status.HTTP_201_CREATED)
+    
+
+#Editar Perfil
+
+"""class EditProfile(APIView):
+    permission_classes = (AllowAny, )
+
+
+    def get(self, request, profile_id):
+        profile_obj = get_object_or_404(Profile, pk=profile_id)
+        serializer = ProfileSerializer(profile_obj)
+        return Response(serializer.data)
+
+    def put(self, request, profile_id):
+        profile_obj = get_object_or_404(Profile, pk=profile_id)
+        serializer = ProfileSerializer (instance=profile_obj, data=request.data, partial=True)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK) """
+
+
+    
+#Imagen del perfil
+class ProfileImageJson(APIView):
+    def get(self, request, *args):
+        print(str(self.parser_classes))
+        return Response({'pasrsers':' '.join(map(str, self.parser_classes))}, status=204)
+    
+    def post(self, request):
+        serializer= ProfileImageSerializer(data=request.data)
+        if serializer.is_valid():
+            validated_data=serializer.validated_data
+
+            profile=Profile(**validated_data)
+            profile.save()
+
+            serializer_response= ProfileImageSerializer(profile)
+
+            return Response(serializer_response.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
     
 
 

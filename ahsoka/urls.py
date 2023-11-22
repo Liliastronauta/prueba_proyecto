@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from logros.views import RetriveAchievements , CreateAchieve, RetriveRandom, ListAchievementsView, EditAchievement, RegisterView
+from logros.views import RetriveAchievements , CreateAchieve, RetriveRandom, ListAchievementsView, EditAchievement, AchievementImageJson, ProfileImageJson, CreatePerfil, EditProfile
 from logros import views
 from django.conf.urls.static import static
 from django.conf import settings
@@ -28,21 +28,17 @@ from django.conf.urls import include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('achievements/', RetriveAchievements.as_view()), #Logros
+    path('achievements/create', CreateAchieve.as_view()),  #Craer Logro
+    path('achievements/random', RetriveRandom.as_view()),  #Listar logros random
+    path('achievements/list/', ListAchievementsView.as_view()), #Listar todos los logros
+    path('achievements/edit/<int:achievement_id>/', EditAchievement.as_view()), #Editar Logros
 
-    #path('users/', RetriveUsers.as_view()),
-
-    #path('users/create/', CreateUser.as_view()),
-
-    path('achievements/', RetriveAchievements.as_view()),
-    path('achievements/create', CreateAchieve.as_view()),
-    path('achievements/random', RetriveRandom.as_view()),
-    path('achievements/list/', ListAchievementsView.as_view()),
-    path('achievements/edit/<int:achievement_id>/', EditAchievement.as_view()),
-
-    path('images/<int:achievementsimage_id>', views.achievementsimage),
-
-    #path('register/', RegisterView.as_view, name="register"),
-    path('auth/', include('logros.urls')),
+    path('auth/', include('logros.urls')), #Registro
+    path('image_achievements/', AchievementImageJson.as_view()), #Imagen de logros
+    path('profile/create/', CreatePerfil.as_view()), #Crear perfil
+    #path('profile/edit/', EditProfile.as_view()), #Editar perfil
+    path('image_profile/', ProfileImageJson.as_view()) #Imagen del perfil 
     
    ]
 

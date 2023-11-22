@@ -1,9 +1,10 @@
 from rest_framework import serializers
 from logros.models import User
-from logros.models import Achievements
+from logros.models import Achievements, Profile
 from rest_framework import viewsets, serializers
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
+from drf_extra_fields.fields import Base64ImageField
 
 class RegisterSerializer(serializers.ModelSerializer):
     password=serializers.CharField(max_length=68, min_length=6, write_only=True)
@@ -27,16 +28,27 @@ class RegisterSerializer(serializers.ModelSerializer):
 
 
 
-"""class UserSerializer(serializers.ModelSerializer):
-    class Meta:
-        model= User
-        fields= '__all__' """
-
-
 class AchievementsSerializer(serializers.ModelSerializer):
     class Meta:
         model = Achievements
         fields = '__all__'    
+
+class AchievementImageSerializer(serializers.ModelSerializer):
+    image=Base64ImageField(required=False)
+    class Meta:
+        model= Achievements
+        fields= '__all__' 
+
+class ProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model= Profile
+        fields= '__all__' 
+
+class ProfileImageSerializer(serializers.ModelSerializer):
+    profile_picture=Base64ImageField(required=False)
+    class Meta:
+        model= Profile
+        fields= '__all__' 
 
 
 
