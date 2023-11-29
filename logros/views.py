@@ -39,7 +39,7 @@ class RegisterView(generics.GenericAPIView):
         relativeLink=reverse('email-verify')
 
         absurl='http://'+current_site+relativeLink+"?token="+str(token)
-        email_body='Welcome to AhsokaVoice '+user.user_name+' Please use the link below to verify your email\n'+ absurl
+        email_body='Welcome to AhsokaVoice '+user.user_name+' \n Please use the link below to verify your email\n'+ absurl
         data={'email_body':email_body,'to_email':user.email, 'email_subject':'Verify your email'}
 
         Util.send_email(data)
@@ -47,7 +47,7 @@ class RegisterView(generics.GenericAPIView):
 
         return Response(user_data, status=status.HTTP_201_CREATED )
 
- #Enviar correo de verificacion   
+#Enviar correo de verificacion   
 class VerifyEmail(generics.GenericAPIView):
     def get(self, request):
         token=request.GET.get('token')
@@ -175,7 +175,7 @@ class CreatePerfil(APIView): #Funcionando
 
 #Editar Perfil
 
-"""class EditProfile(APIView):
+class EditProfile(APIView):
     permission_classes = (AllowAny, )
 
 
@@ -189,7 +189,7 @@ class CreatePerfil(APIView): #Funcionando
         serializer = ProfileSerializer (instance=profile_obj, data=request.data, partial=True)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(serializer.data, status=status.HTTP_200_OK) """
+        return Response(serializer.data, status=status.HTTP_200_OK) 
 
 
     

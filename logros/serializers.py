@@ -5,6 +5,8 @@ from rest_framework import viewsets, serializers
 from rest_framework.validators import UniqueValidator
 from django.contrib.auth.password_validation import validate_password
 from drf_extra_fields.fields import Base64ImageField
+from datetime import datetime
+from dateutil.relativedelta import relativedelta
 
 class RegisterSerializer(serializers.ModelSerializer):
     password=serializers.CharField(max_length=68, min_length=6, write_only=True)
@@ -12,6 +14,14 @@ class RegisterSerializer(serializers.ModelSerializer):
     class Meta:
         model=User
         fields = ['first_name', 'last_name', 'user_name', 'birth_date', 'email', 'password'] 
+    
+    def validate_birth_date(self, birth_date):
+        age=relativedelta(datetime.now(), birth_date).years
+
+        if age < 18:
+            raise serializers.ValidationError('Must be at least 18 years old to register.')
+        else:
+            return birth_date
 
     def validate(self, attrs):
     

@@ -37,7 +37,7 @@ urlpatterns = [
     path('auth/', include('logros.urls')), #Registro
     path('image_achievements/', AchievementImageJson.as_view()), #Imagen de logros
     path('profile/create/', CreatePerfil.as_view()), #Crear perfil
-    #path('profile/edit/', EditProfile.as_view()), #Editar perfil
+    path('profile/edit/<int:profile_id>/', EditProfile.as_view()), #Editar perfil
     path('image_profile/', ProfileImageJson.as_view()) #Imagen del perfil 
     
    ]
